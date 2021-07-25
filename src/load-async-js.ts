@@ -1,22 +1,5 @@
 type LoadState = 'not-loaded' | 'loading' | 'loaded';
 
-const getScriptState = (url: string): LoadState => {
-  const scriptEl = document.querySelector(`[src="${url}"]`);
-  return !scriptEl
-    ? 'not-loaded'
-    : <LoadState>scriptEl.getAttribute('load-state') || 'loaded';
-};
-
-const getFirstScript = () => {
-  const fjs = document.getElementsByTagName('script')[0];
-  if (fjs) {
-    return fjs;
-  }
-  const js = document.createElement('script');
-  document.body.appendChild(js);
-  return js;
-};
-
 /**
  * Load js file(s) asynchonously.
  *
@@ -35,17 +18,20 @@ export const loadAsyncJs = (url: string | string[]): Promise<void[]> => {
     let jsEl: HTMLScriptElement;
     const state = getScriptState(urlStr);
 
-    if (state === 'loaded') {
-      return;
-    }
+    switch (state) {
+      case 'loaded':
+        return;
 
-    if (state === 'loading') {
-      jsEl = document.querySelector(`[src="${urlStr}"]`);
-    } else {
-      jsEl = document.createElement('script');
-      jsEl.src = urlStr;
-      jsEl.setAttribute('load-state', 'loading');
-      fjs.parentNode.insertBefore(jsEl, fjs);
+      case 'loading':
+        jsEl = document.querySelector(`[src="${urlStr}"]`);
+        break;
+
+      default:
+        jsEl = document.createElement('script');
+        jsEl.src = urlStr;
+        jsEl.setAttribute('load-state', 'loading');
+        fjs.parentNode.insertBefore(jsEl, fjs);
+        break;
     }
 
     const promise: Promise<void> = new Promise((resolve) => {
@@ -58,6 +44,23 @@ export const loadAsyncJs = (url: string | string[]): Promise<void[]> => {
   });
 
   return Promise.all(promises);
+};
+
+const getFirstScript = () => {
+  const fjs = document.getElementsByTagName('script')[0];
+  if (fjs) {
+    return fjs;
+  }
+  const js = document.createElement('script');
+  document.body.appendChild(js);
+  return js;
+};
+
+const getScriptState = (url: string): LoadState => {
+  const scriptEl = document.querySelector(`[src="${url}"]`);
+  return !scriptEl
+    ? 'not-loaded'
+    : <LoadState>scriptEl.getAttribute('load-state') || 'loaded';
 };
 
 /**
