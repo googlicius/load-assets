@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 
-import { loadAsyncJS } from './load-async-js';
+import { loadAsyncJs } from './load-async-js';
 
 describe('Test load async js', () => {
   document.body.innerHTML = `<div></div>`;
 
   test('External lib loaded and initialized globaly', (done) => {
-    loadAsyncJS(
+    loadAsyncJs(
       'https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.2/min/tiny-slider.js',
     ).then(() => {
       expect(window['tns']).toBeTruthy();
@@ -19,13 +19,13 @@ describe('Test load async js', () => {
   test('Load 2 external libs as same times', async () => {
     document.body.innerHTML = `<div></div>`;
 
-    await loadAsyncJS([
-      'https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.2/min/tiny-slider.js',
+    await loadAsyncJs([
       'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js',
+      'https://connect.facebook.net/en_US/sdk.js',
     ]);
 
-    expect(window['tns']).toBeTruthy();
     expect(window['_']).toBeTruthy();
+    expect(window['FB']).toBeTruthy();
   });
 
   test('Load 1 external lib when given same urls', async () => {
@@ -34,7 +34,7 @@ describe('Test load async js', () => {
     const scriptUrl =
       'https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.2/min/tiny-slider.js';
 
-    await loadAsyncJS([scriptUrl, scriptUrl, scriptUrl]);
+    await loadAsyncJs([scriptUrl, scriptUrl, scriptUrl]);
     const scriptEls = document.querySelectorAll(`[src="${scriptUrl}"]`);
 
     expect(window['tns']).toBeTruthy();
@@ -48,12 +48,12 @@ describe('Test load async js', () => {
       'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js';
 
     await Promise.all([
-      loadAsyncJS(scriptUrl),
-      loadAsyncJS(scriptUrl),
-      loadAsyncJS(scriptUrl),
+      loadAsyncJs(scriptUrl),
+      loadAsyncJs(scriptUrl),
+      loadAsyncJs(scriptUrl),
     ]);
-    await loadAsyncJS(scriptUrl);
-    await loadAsyncJS(scriptUrl);
+    await loadAsyncJs(scriptUrl);
+    await loadAsyncJs(scriptUrl);
 
     const scriptEls = document.querySelectorAll(`[src="${scriptUrl}"]`);
 

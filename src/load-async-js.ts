@@ -9,12 +9,12 @@ const getScriptState = (url: string): LoadState => {
 
 const getFirstScript = () => {
   const fjs = document.getElementsByTagName('script')[0];
-  if (!fjs) {
-    const js = document.createElement('script');
-    document.body.appendChild(js);
-    return js;
+  if (fjs) {
+    return fjs;
   }
-  return fjs;
+  const js = document.createElement('script');
+  document.body.appendChild(js);
+  return js;
 };
 
 /**
@@ -23,7 +23,7 @@ const getFirstScript = () => {
  * @param url url(s) of JS file(s)
  * @returns Promise<void[]>
  */
-export const loadAsyncJS = (url: string | string[]): Promise<void[]> => {
+export const loadAsyncJs = (url: string | string[]): Promise<void[]> => {
   const fjs = getFirstScript();
   const promises: Promise<void>[] = [];
 
