@@ -1,10 +1,10 @@
 # Load Assets
 
-Utilities to load assets asynchonously: javascript, css, images,...
+Utilities to load assets programatically: javascript, css, images,...
 
 ## Motivation
 
-I am a fan of using javascript libraries from their CDN rather than include them in our application bundle. If you are building application with React.js, Angular, Vue.js, there are many wrapper of libraries you need. But it causes a problem called [`bi-incompatible`](#two-way-incompatible) (that's what I call it) when you upgrade your framework to latest version. Some javascript libraries doesn't support npm installation, or you just want to load it as lazy way (when user reach a specific page).
+I am a fan of using javascript libraries from their CDN rather than include them in the application bundle. If you are building application with React.js, Angular, or Vue.js, there are many wrapper of libraries you need. But it causes a problem called [`bi-incompatible`](#two-way-incompatible) (that's what I call it) when you upgrade your framework to latest version. Some javascript libraries doesn't support npm installation, or you just want to load it as lazy way (when user reach a specific page).
 
 ## Installation
 
@@ -30,7 +30,7 @@ loadScript(
 });
 ```
 
-Loads and runs 2 javascript files in parallel (async load).
+Loads and runs 2 javascript files in parallel.
 
 ```javascript
 loadScript(
@@ -42,7 +42,7 @@ loadScript(
 ```
 
 Load 2 javascript files in parallel but runs in order,
-which means the second script depends on the first one (defer load).
+which means the second script depends on the first one.
 
 ```javascript
 loadScript([

@@ -1,4 +1,4 @@
-import parseArgs from './innternal/parse-args';
+import parseArgs from './internal/parse-args';
 import { AnyOption, MaybeArray } from './types';
 
 type LoadState = 'not-loaded' | 'loading' | 'loaded';
