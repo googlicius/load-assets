@@ -1,31 +1,40 @@
-import parseArgs from './internal/parse-args';
-import { AnyOption, MaybeArray } from './types';
+import isArrayOrString from './internal/isArrayOrString';
+import parseArgs from './internal/parseArgs';
+import { AnyOption, MaybeArray, ScriptAttr } from './types';
 
 type LoadState = 'not-loaded' | 'loading' | 'loaded';
 
 /**
  * Load js file(s) async/defer.
  *
- * @param url url(s) of JS file(s)
  * @returns Promise<void[]>
  */
 export const loadScript = (
   ...args: (MaybeArray<string> | AnyOption)[]
 ): Promise<void[]> => {
-  const scriptAttrs = parseArgs(...args);
-  const fjs = getFirstScript();
+  const option =
+    args.length > 1 &&
+    !isArrayOrString(args[args.length - 1]) &&
+    <AnyOption>args.pop();
+
+  const scriptAttrs: ScriptAttr[] = parseArgs(...args, {
+    ...option,
+    fileType: 'js',
+  });
+  const fjs: HTMLScriptElement = getFirstScript();
   const promises: Promise<void>[] = [];
 
   scriptAttrs.forEach(({ src, async, ...rest }) => {
-    let jsEl: HTMLScriptElement;
-    const state = getScriptState(src);
+    let jsEl: HTMLScriptElement = document.querySelector(`[src="${src}"]`);
+    const state: LoadState = !jsEl
+      ? 'not-loaded'
+      : <LoadState>jsEl.getAttribute('load-state') || 'loaded';
 
     switch (state) {
       case 'loaded':
         return;
 
       case 'loading':
-        jsEl = document.querySelector(`[src="${src}"]`);
         break;
 
       default:
@@ -44,13 +53,14 @@ export const loadScript = (
         break;
     }
 
-    const promise: Promise<void> = new Promise((resolve) => {
-      addOnloadHandler(jsEl, () => {
-        jsEl.setAttribute('load-state', 'loaded');
-        resolve();
-      });
-    });
-    promises.push(promise);
+    promises.push(
+      new Promise((resolve) => {
+        addOnloadHandler(jsEl, () => {
+          jsEl.setAttribute('load-state', 'loaded');
+          resolve();
+        });
+      }),
+    );
   });
 
   return Promise.all(promises);
@@ -64,13 +74,6 @@ const getFirstScript = () => {
   const js = document.createElement('script');
   document.body.appendChild(js);
   return js;
-};
-
-const getScriptState = (url: string): LoadState => {
-  const scriptEl = document.querySelector(`[src="${url}"]`);
-  return !scriptEl
-    ? 'not-loaded'
-    : <LoadState>scriptEl.getAttribute('load-state') || 'loaded';
 };
 
 /**

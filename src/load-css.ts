@@ -1,20 +1,30 @@
+import isArrayOrString from './internal/isArrayOrString';
+import parseArgs from './internal/parseArgs';
+import { AnyOption, MaybeArray } from './types';
+
 /**
  * Load css file(s) asynchonously.
- *
- * @param url url(s) of css file(s)
+
  * @returns Promise<void[]>
  */
-export const loadCss = (href: string | Array<string>): Promise<void>[] => {
-  const fjs = document.getElementsByTagName('link')[0];
+export const loadCss = (
+  ...args: (MaybeArray<string> | AnyOption)[]
+): Promise<void[]> => {
+  const option =
+    args.length > 1 &&
+    !isArrayOrString(args[args.length - 1]) &&
+    <AnyOption>args.pop();
+
+  const elementAttr = parseArgs(...args, {
+    ...option,
+    fileType: 'css',
+  });
+  const fjs = getFirstLink();
   const promises: Promise<void>[] = [];
 
-  if (typeof href === 'string') {
-    href = [href];
-  }
-
-  href.forEach((hrefStr) => {
-    if (!document.querySelector(`[href="${hrefStr}"]`)) {
-      const link = createElement(document, 'link', hrefStr);
+  elementAttr.forEach(({ src }) => {
+    if (!document.querySelector(`[href="${src}"]`)) {
+      const link = createElement(document, 'link', src);
       fjs.parentNode.insertBefore(link, fjs);
       const promise: Promise<void> = new Promise((resolve) => {
         link.onload = function onload() {
@@ -25,7 +35,7 @@ export const loadCss = (href: string | Array<string>): Promise<void>[] => {
     }
   });
 
-  return promises;
+  return Promise.all(promises);
 };
 
 function createElement(d, s, href) {
@@ -34,3 +44,13 @@ function createElement(d, s, href) {
   link.rel = 'stylesheet';
   return link;
 }
+
+const getFirstLink = (): HTMLLinkElement => {
+  const firstLink = document.getElementsByTagName('link')[0];
+  if (firstLink) {
+    return firstLink;
+  }
+  const link = document.createElement('link');
+  document.body.appendChild(link);
+  return link;
+};

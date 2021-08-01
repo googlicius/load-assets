@@ -1,10 +1,22 @@
-import parseArgs from './parse-args';
+import parseArgs from './parseArgs';
 
 describe('Parse Args test', () => {
   test('Args is single string', () => {
     const url = 'https://example.com/assets/prism.js';
 
     expect(parseArgs(url)).toEqual([
+      {
+        src: url,
+        async: true,
+      },
+    ]);
+  });
+
+  test('Filter only js file', () => {
+    const url = 'https://example.com/assets/prism.js';
+    const imageUrl = 'https://example.com/assets/my-image.png';
+
+    expect(parseArgs(url, imageUrl, { fileType: 'js' })).toEqual([
       {
         src: url,
         async: true,
@@ -52,6 +64,7 @@ describe('Parse Args test', () => {
     const urls = [url1, url2];
     const option = {
       'data-my-attr': 'hey',
+      fileType: 'js',
     };
 
     const res = parseArgs(url, urls, url3, option);
@@ -85,6 +98,7 @@ describe('Parse Args test', () => {
     const url2 = 'https://example.com/assets/lodash.js';
     const option = {
       'data-manual': '1',
+      fileType: 'js',
     };
 
     expect(() => {
