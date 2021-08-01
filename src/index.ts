@@ -1,2 +1,2 @@
-export * from './load-async-js';
-export * from './load-async-css';
+export * from './load-script';
+export * from './load-css';

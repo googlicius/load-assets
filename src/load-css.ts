@@ -1,11 +1,10 @@
-function createElement(d, s, href) {
-  const link = d.createElement(s);
-  link.href = href;
-  link.rel = 'stylesheet';
-  return link;
-}
-
-export const loadAsyncCss = (href: string | Array<string>): Promise<void>[] => {
+/**
+ * Load css file(s) asynchonously.
+ *
+ * @param url url(s) of css file(s)
+ * @returns Promise<void[]>
+ */
+export const loadCss = (href: string | Array<string>): Promise<void>[] => {
   const fjs = document.getElementsByTagName('link')[0];
   const promises: Promise<void>[] = [];
 
@@ -28,3 +27,10 @@ export const loadAsyncCss = (href: string | Array<string>): Promise<void>[] => {
 
   return promises;
 };
+
+function createElement(d, s, href) {
+  const link = d.createElement(s);
+  link.href = href;
+  link.rel = 'stylesheet';
+  return link;
+}

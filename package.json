@@ -1,6 +1,6 @@
 {
   "name": "@googlicius/load-assets",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Load assets helper",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,6 +19,11 @@
     "test": "jest",
     "prepare": "husky install"
   },
+  "keywords": [
+    "load scripts",
+    "file assets",
+    "typescript"
+  ],
   "devDependencies": {
     "@babel/core": "^7.14.8",
     "@babel/preset-env": "^7.14.8",

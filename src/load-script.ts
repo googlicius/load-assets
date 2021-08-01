@@ -1,34 +1,44 @@
+import parseArgs from './innternal/parse-args';
+import { AnyOption, MaybeArray } from './types';
+
 type LoadState = 'not-loaded' | 'loading' | 'loaded';
 
 /**
- * Load js file(s) asynchonously.
+ * Load js file(s) async/defer.
  *
  * @param url url(s) of JS file(s)
  * @returns Promise<void[]>
  */
-export const loadAsyncJs = (url: string | string[]): Promise<void[]> => {
+export const loadScript = (
+  ...args: (MaybeArray<string> | AnyOption)[]
+): Promise<void[]> => {
+  const scriptAttrs = parseArgs(...args);
   const fjs = getFirstScript();
   const promises: Promise<void>[] = [];
 
-  if (typeof url === 'string') {
-    url = [url];
-  }
-
-  url.forEach((urlStr) => {
+  scriptAttrs.forEach(({ src, async, ...rest }) => {
     let jsEl: HTMLScriptElement;
-    const state = getScriptState(urlStr);
+    const state = getScriptState(src);
 
     switch (state) {
       case 'loaded':
         return;
 
       case 'loading':
-        jsEl = document.querySelector(`[src="${urlStr}"]`);
+        jsEl = document.querySelector(`[src="${src}"]`);
         break;
 
       default:
         jsEl = document.createElement('script');
-        jsEl.src = urlStr;
+        jsEl.src = src;
+        jsEl.async = async;
+        if (rest) {
+          for (const key in rest) {
+            if (Object.prototype.hasOwnProperty.call(rest, key)) {
+              jsEl.setAttribute(key, rest[key]);
+            }
+          }
+        }
         jsEl.setAttribute('load-state', 'loading');
         fjs.parentNode.insertBefore(jsEl, fjs);
         break;

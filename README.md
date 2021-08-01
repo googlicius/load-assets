@@ -21,31 +21,43 @@ yarn add @googlicius/load-assets
 ## Usage
 
 ```javascript
-import { loadAsyncJs } from '@googlicius/load-assets';
+import { loadScript } from '@googlicius/load-assets';
 
-loadAsyncJs(
+loadScript(
   'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js',
 ).then(() => {
   // Lodash available here.
 });
 ```
 
-Load 2 javascript files as same times
+Loads and runs 2 javascript files in parallel (async load).
 
 ```javascript
-loadAsyncJs([
+loadScript(
   'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js',
   'https://connect.facebook.net/en_US/sdk.js',
-]).then(() => {
+).then(() => {
   // Lodash and Facebook SDK available here.
+});
+```
+
+Load 2 javascript files in parallel but runs in order,
+which means the second script depends on the first one (defer load).
+
+```javascript
+loadScript([
+  'https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js',
+]).then(() => {
+  // Prism initialized with its autoloader.
 });
 ```
 
 ## API
 
-- **loadAsyncJs**: Load one or more javascript file(s) from cdn or external sources.
-- **loadAsyncCss**: Load one or more css file(s) from cdn or external sources.
-- **loadAsyncImage**: Load one or more image(s) from cdn or external sources.
+- **loadScript**: Load one or more javascript file(s) from cdn or external sources.
+- **loadCss**: Load one or more css file(s) from cdn or external sources.
+- **loadImage**: Load one or more image(s) from cdn or external sources.
 
 ## License
 
