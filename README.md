@@ -53,7 +53,7 @@ loadScript([
 });
 ```
 
-Ofter a library is not only have javascript but also with its own css file.
+Often a library is not only have javascript but also with its own css file.
 So to load css and js we simple use `loadAsset`:
 
 ```javascript
@@ -82,6 +82,7 @@ loadScript('https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js', {
 - **loadScript**: Load one or more javascript file(s) from cdn or external sources.
 - **loadCss**: Load one or more css file(s) from cdn or external sources.
 - **loadImage**: Load one or more image(s) from cdn or external sources.
+- **loadAsset**: Load any file type, based on file extension. This method is a combination of all api above.
 
 ## License
 

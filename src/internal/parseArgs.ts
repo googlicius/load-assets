@@ -1,4 +1,4 @@
-import { AnyOption, MaybeArray, ScriptAttr } from '../types';
+import { AnyOption, MaybeArray, ElementAttr } from '../types';
 import isArrayOrString from './isArrayOrString';
 
 function getExt(filepath) {
@@ -10,14 +10,14 @@ function getExt(filepath) {
  */
 export default function parseArgs(
   ...args: (MaybeArray<string> | AnyOption)[]
-): ScriptAttr[] {
+): ElementAttr[] {
   const option =
     args.length > 1 && !isArrayOrString(args[args.length - 1])
       ? <AnyOption>args.pop()
       : {};
   const { fileType, ...rest } = option;
 
-  const result: ScriptAttr[] = [];
+  const result: ElementAttr[] = [];
 
   for (let i = 0; i < args.length; i++) {
     const url = args[i];
@@ -28,26 +28,26 @@ export default function parseArgs(
       );
     }
 
-    const srcs = typeof url === 'string' ? [url] : (url as string[]);
+    const urls = typeof url === 'string' ? [url] : (url as string[]);
 
-    srcs.forEach((src) => {
+    urls.forEach((url) => {
       // Ignore unmatched extension.
-      if (fileType && getExt(src) !== fileType) {
+      if (fileType && getExt(url) !== fileType) {
         return;
       }
 
-      let scriptAttr: ScriptAttr = {
-        src,
+      let elAttr: ElementAttr = {
+        url,
         async: true,
       };
 
-      if (srcs.length > 1) {
-        scriptAttr.async = false;
+      if (urls.length > 1) {
+        elAttr.async = false;
       }
 
-      scriptAttr = Object.assign({}, rest, scriptAttr);
+      elAttr = Object.assign({}, rest, elAttr);
 
-      result.push(scriptAttr);
+      result.push(elAttr);
     });
   }
 

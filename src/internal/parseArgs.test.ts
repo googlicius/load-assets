@@ -6,7 +6,7 @@ describe('Parse Args test', () => {
 
     expect(parseArgs(url)).toEqual([
       {
-        src: url,
+        url,
         async: true,
       },
     ]);
@@ -18,7 +18,7 @@ describe('Parse Args test', () => {
 
     expect(parseArgs(url, imageUrl, { fileType: 'js' })).toEqual([
       {
-        src: url,
+        url,
         async: true,
       },
     ]);
@@ -31,11 +31,11 @@ describe('Parse Args test', () => {
     expect(parseArgs(url, url2)).toEqual([
       {
         async: true,
-        src: url,
+        url,
       },
       {
         async: true,
-        src: url2,
+        url: url2,
       },
     ]);
   });
@@ -46,17 +46,17 @@ describe('Parse Args test', () => {
 
     expect(parseArgs([url, url2])).toEqual([
       {
-        src: url,
+        url,
         async: false,
       },
       {
-        src: url2,
+        url: url2,
         async: false,
       },
     ]);
   });
 
-  test('Args is mixed of series arrays and strings and option', () => {
+  test('Args is mixed series of arrays and strings and option', () => {
     const url = 'https://example.com/assets/facebook-sdk.js';
     const url1 = 'https://example.com/assets/prism.js';
     const url2 = 'https://example.com/assets/prism.autoload.js';
@@ -64,7 +64,6 @@ describe('Parse Args test', () => {
     const urls = [url1, url2];
     const option = {
       'data-my-attr': 'hey',
-      fileType: 'js',
     };
 
     const res = parseArgs(url, urls, url3, option);
@@ -72,22 +71,22 @@ describe('Parse Args test', () => {
     expect(res).toEqual([
       {
         'data-my-attr': 'hey',
-        src: url,
+        url,
         async: true,
       },
       {
         'data-my-attr': 'hey',
-        src: url1,
+        url: url1,
         async: false,
       },
       {
         'data-my-attr': 'hey',
-        src: url2,
+        url: url2,
         async: false,
       },
       {
         'data-my-attr': 'hey',
-        src: url3,
+        url: url3,
         async: true,
       },
     ]);
@@ -98,7 +97,6 @@ describe('Parse Args test', () => {
     const url2 = 'https://example.com/assets/lodash.js';
     const option = {
       'data-manual': '1',
-      fileType: 'js',
     };
 
     expect(() => {

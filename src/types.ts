@@ -5,8 +5,8 @@ export interface AnyOption {
   fileType?: string;
 }
 
-export interface ScriptAttr {
-  src: string;
+export interface ElementAttr {
+  url: string;
   async: boolean;
   [x: string]: any;
 }

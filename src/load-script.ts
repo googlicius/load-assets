@@ -1,6 +1,6 @@
 import isArrayOrString from './internal/isArrayOrString';
 import parseArgs from './internal/parseArgs';
-import { AnyOption, MaybeArray, ScriptAttr } from './types';
+import { AnyOption, MaybeArray, ElementAttr } from './types';
 
 type LoadState = 'not-loaded' | 'loading' | 'loaded';
 
@@ -17,15 +17,15 @@ export const loadScript = (
     !isArrayOrString(args[args.length - 1]) &&
     <AnyOption>args.pop();
 
-  const scriptAttrs: ScriptAttr[] = parseArgs(...args, {
+  const scriptAttrs: ElementAttr[] = parseArgs(...args, {
     ...option,
     fileType: 'js',
   });
   const fjs: HTMLScriptElement = getFirstScript();
   const promises: Promise<void>[] = [];
 
-  scriptAttrs.forEach(({ src, async, ...rest }) => {
-    let jsEl: HTMLScriptElement = document.querySelector(`[src="${src}"]`);
+  scriptAttrs.forEach(({ url, async, ...rest }) => {
+    let jsEl: HTMLScriptElement = document.querySelector(`[src="${url}"]`);
     const state: LoadState = !jsEl
       ? 'not-loaded'
       : <LoadState>jsEl.getAttribute('load-state') || 'loaded';
@@ -39,7 +39,7 @@ export const loadScript = (
 
       default:
         jsEl = document.createElement('script');
-        jsEl.src = src;
+        jsEl.src = url;
         jsEl.async = async;
         if (rest) {
           for (const key in rest) {

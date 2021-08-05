@@ -22,9 +22,9 @@ export const loadCss = (
   const fjs = getFirstLink();
   const promises: Promise<void>[] = [];
 
-  elementAttr.forEach(({ src }) => {
-    if (!document.querySelector(`[href="${src}"]`)) {
-      const link = createElement(document, 'link', src);
+  elementAttr.forEach(({ url }) => {
+    if (!document.querySelector(`[href="${url}"]`)) {
+      const link = createElement(document, 'link', url);
       fjs.parentNode.insertBefore(link, fjs);
       const promise: Promise<void> = new Promise((resolve) => {
         link.onload = function onload() {
