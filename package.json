@@ -1,6 +1,6 @@
 {
   "name": "@googlicius/load-assets",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Load assets helper",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -1,4 +1,4 @@
-name: Test
+name: Testing
 
 on:
   push:
@@ -44,5 +44,8 @@ jobs:
       - name: Install dependencies
         run: yarn --prefer-offline
 
-      - name: Run test
-        run: yarn test --collect-coverage
+      - name: Run lint, build, and test
+        run: |
+          yarn lint
+          yarn build
+          yarn test --collect-coverage
